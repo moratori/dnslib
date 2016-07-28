@@ -9,7 +9,35 @@
 
 
 (setf prove:*debug-on-error* t)
+(setf prove:*default-reporter* :fiveam)
 (setf *random-state* (make-random-state t))
+
+
+
+(defvar *random-dns-packet-test* 1000000)
+
+
+(defun random-array-maker (len element-range)
+  (make-array (list len)
+              :element-type 'unsigned-byte
+              :initial-contents 
+              (loop for i from 0 below len collect
+                    (random element-range))))
+
+(defvar *failers* nil)
+
+(defun test-result-mapper ()
+  (let ((d (random-array-maker (random 4096) 256) ))
+    (handler-case
+      (dnslib.core.parser:parse d)
+      (dnslib.core.errors::data-parse-error (err) 
+        (declare (ignore err))
+        t)
+      (condition (err) 
+        (print err) 
+        (push d *failers*)
+        nil))))
+
 
 (plan 1)
 
@@ -73,6 +101,22 @@
                (raws 
                  
                  '(
+
+                   #|
+(
+181 167 32 121 192 229 183 4 163 84 119 226 192 12 47 44 40 243 119 155 48 67
+  47 95 75 96 55 147 114 31 114 48 104 205 232 253 90 36 43 56 42 129 89 244 87
+  216 32 80 122 59 0 213 182 21 215 95 142 116 213 74 241 75 68 101 147 192 85
+  96 2 46 136 84 61 116 233 206 124 44 216 223 223 88 89 176 91 1 21 54 15 123
+  218 179 172 112 113 72 169 225 217 217 27 159 180 123 232 166 33 235 225 147
+  27 247 99 52 102 120 97 179 21 13 36 128 84 133 80 106 207 242 73 172 78 28
+  61 92 89 113 236 126 168 221 218 167 69 199 11 196 6 110 234 211 216 176 4 26
+  34 80 211 115 157 52 136 182 63 116 99 248 68 76 137 128 161 55 111 168 233
+  232 231 41 209 218 142 47 252 208 248 101 5 185 172 184 160 145 17 87 1 143
+  170 86 216 121 137 90 11 197 195 169 25 169 156 121 73 209 118 148 47 121 135
+  55 69 52 238 187 166 241 138 221 132 251 148 96 187 58 8 111 196 156 218 186 250 123 218 0 246 170 122 172 152
+)
+|#
                    (#X59 #X1b #X01 #X00 #X00 #X01 #X00 #X00 #X00 #X00 #X00 #X00 #X03 #X77 #X77 #X77
                     #X06 #X67 #X6f #X6f #X67 #X6c #X65 #X02 #X63 #X6f #X02 #X6a #X70 #X00 #X00 #X01 #X00 #X01)
                    (#Xcd #X7f #X81 #X80 #X00 #X01 #X00 #X02 #X00 #X00 #X00 #X00 #X08 #X63 #X6c #X69
@@ -135,8 +179,14 @@
         (ok (dnslib.core.parser::parse-question 'dnslib.core.types:dns.question tcase_parse-question5_1 tcase_parse-question5_2 0 1))
         (ok (dnslib.core.parser::parse-question 'dnslib.core.types:dns.question tcase_parse-question6_1 tcase_parse-question6_2 0 1))
         
-        (loop for each in whole do (ok (print (dnslib.core.parser:parse each))))
+        (loop for each in whole do (ok (dnslib.core.parser:parse each)))
+
+        (loop for i from 0 below *random-dns-packet-test*
+              do (ok (test-result-mapper)))
         
         ))
 
+(print *failers*)
+
 (finalize)
+

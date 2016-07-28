@@ -24,13 +24,13 @@
 
 
 
-(defun parse-name (ubyte-array start initial-start)
+(defun parse-name (ubyte-array start initial-start &optional (flag t))
   "以下を多値で返す:
      - 次のパースで処理を開始すべきポインタ
      - DNSの各ヘッダ中で出現するドメイン名をパースし、
        ラベルのリストにしたもの."
  
-  (when (< initial-start start)
+  (when (and (<= initial-start start) (not flag))
     (qp-error ubyte-array "pointer must be point foregoing data"))
   
   (let ((result nil)
@@ -77,7 +77,7 @@
                (qp-error ubyte-array "pointer must not point header"))
 
              (multiple-value-bind 
-               (_ tmp) (parse-name ubyte-array jump-ptr initial-start)
+               (_ tmp) (parse-name ubyte-array jump-ptr initial-start nil)
                (declare (ignore _))
                (setf result (nconc result tmp))
                (incf start 2)
