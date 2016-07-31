@@ -12,22 +12,23 @@
 (setf prove:*default-reporter* :fiveam)
 (setf *random-state* (make-random-state t))
 
-
-
-(defvar *random-dns-packet-test* 1000000)
-
-
-(defun random-array-maker (len element-range)
-  (make-array (list len)
-              :element-type 'unsigned-byte
-              :initial-contents 
-              (loop for i from 0 below len collect
-                    (random element-range))))
-
+(defvar *random-dns-packet-test* 30000)
 (defvar *failers* nil)
 
+
+(defun make-ub8-array (list)
+  (make-array 
+    (list (length list))
+    :element-type '(unsigned-byte 8)
+    :initial-contents list))
+
+(defun make-random-array (len element-range)
+  (make-ub8-array 
+    (loop for i from 0 below len 
+          collect (random element-range))))
+
 (defun test-result-mapper ()
-  (let ((d (random-array-maker (random 4096) 256) ))
+  (let ((d (make-random-array (random 4096) 256)))
     (handler-case
       (dnslib.core.parser:parse d)
       (dnslib.core.errors::data-parse-error (err) 
@@ -39,84 +40,57 @@
         nil))))
 
 
+
+
 (plan 1)
 
 (subtest "TESTING: dnslib.core.parser"
 
         (let* ((tcase_parse-name1 
-                 (make-array '(16) 
-                             :element-type 'unsigned-byte  
-                             :initial-contents '(3 119 119 119 7 101 120 97 109 112 108 101 2 106 112 0)))
+                 (make-ub8-array  
+                   '(3 119 119 119 7 101 120 97 109 112 108 101 2 106 112 0)))
 
                (tcase_parse-header1_1
                  (dnslib.core.types:dns))
                (tcase_parse-header1_2
-                 (make-array '(12) 
-                             :element-type 'unsigned-byte  
-                             :initial-contents '(#X7c #Xd9 #X01 #X00 #X00 #X01 #X00 #X00 #X00 #X00 #X00 #X00)))
+                 (make-ub8-array
+                   '(#X7c #Xd9 #X01 #X00 #X00 #X01 #X00 #X00 #X00 #X00 #X00 #X00)))
 
                (tcase_parse-question1_1
                  (dnslib.core.types:dns))
                (tcase_parse-question1_2
-                 (make-array '(20)
-                             :element-type 'unsigned-byte
-                             :initial-contents 
-                            '(#X03 #X77 #X77 #X77 #X06 #X66 #X6f #X6f #X62 #X61 #X72 #X03 #X63 #X6f #X6d #X00 #X00 #X01 #X00 #X01)))
+                 (make-ub8-array 
+                   '(#X03 #X77 #X77 #X77 #X06 #X66 #X6f #X6f #X62 #X61 #X72 #X03 #X63 #X6f #X6d #X00 #X00 #X01 #X00 #X01)))
                (tcase_parse-question2_1
                  (dnslib.core.types:dns))
                (tcase_parse-question2_2
-                 (make-array '(20)
-                             :element-type 'unsigned-byte
-                             :initial-contents 
-                            '(#X03 #X77 #X77 #X77 #X06 #X67 #X6f #X6f #X67 #X6c #X65 #X03 #X63 #X6f #X6d #X00 #X00 #X01 #X00 #X01)))
+                 (make-ub8-array 
+                   '(#X03 #X77 #X77 #X77 #X06 #X67 #X6f #X6f #X67 #X6c #X65 #X03 #X63 #X6f #X6d #X00 #X00 #X01 #X00 #X01)))
                (tcase_parse-question3_1
                  (dnslib.core.types:dns))
                (tcase_parse-question3_2
-                 (make-array '(16)
-                             :element-type 'unsigned-byte
-                             :initial-contents 
-                             '(#X07 #X65 #X78 #X61 #X6d #X70 #X6c #X65 #X02 #X6a #X70 #X00 #X00 #X01 #X00 #X01)))
+                 (make-ub8-array 
+                   '(#X07 #X65 #X78 #X61 #X6d #X70 #X6c #X65 #X02 #X6a #X70 #X00 #X00 #X01 #X00 #X01)))
                (tcase_parse-question4_1
                  (dnslib.core.types:dns))
                (tcase_parse-question4_2
-                 (make-array '(13)
-                             :element-type 'unsigned-byte
-                             :initial-contents 
-                             '(#X04 #X6d #X74 #X63 #X71 #X02 #X6a #X70 #X00 #X00 #X01 #X00 #X01)))
+                 (make-ub8-array
+                   '(#X04 #X6d #X74 #X63 #X71 #X02 #X6a #X70 #X00 #X00 #X01 #X00 #X01)))
                (tcase_parse-question5_1
                  (dnslib.core.types:dns))
                (tcase_parse-question5_2
-                 (make-array '(15)
-                             :element-type 'unsigned-byte
-                             :initial-contents 
-                             '(#X05 #X61 #X73 #X61 #X68 #X69 #X03 #X63 #X6f #X6d #X00 #X00 #X02 #X00 #X01 )))
+                 (make-ub8-array 
+                   '(#X05 #X61 #X73 #X61 #X68 #X69 #X03 #X63 #X6f #X6d #X00 #X00 #X02 #X00 #X01 )))
                (tcase_parse-question6_1
                  (dnslib.core.types:dns))
                (tcase_parse-question6_2
-                 (make-array '(17)
-                             :element-type 'unsigned-byte
-                             :initial-contents 
-                             '(#X05 #X79 #X61 #X68 #X6f #X6f #X02 #X63 #X6f #X02 #X6a #X70 #X00 #X00 #X0f #X00 #X01)))
+                 (make-ub8-array 
+                   '(#X05 #X79 #X61 #X68 #X6f #X6f #X02 #X63 #X6f #X02 #X6a #X70 #X00 #X00 #X0f #X00 #X01)))
 
                (raws 
                  
                  '(
-
-                   #|
-(
-181 167 32 121 192 229 183 4 163 84 119 226 192 12 47 44 40 243 119 155 48 67
-  47 95 75 96 55 147 114 31 114 48 104 205 232 253 90 36 43 56 42 129 89 244 87
-  216 32 80 122 59 0 213 182 21 215 95 142 116 213 74 241 75 68 101 147 192 85
-  96 2 46 136 84 61 116 233 206 124 44 216 223 223 88 89 176 91 1 21 54 15 123
-  218 179 172 112 113 72 169 225 217 217 27 159 180 123 232 166 33 235 225 147
-  27 247 99 52 102 120 97 179 21 13 36 128 84 133 80 106 207 242 73 172 78 28
-  61 92 89 113 236 126 168 221 218 167 69 199 11 196 6 110 234 211 216 176 4 26
-  34 80 211 115 157 52 136 182 63 116 99 248 68 76 137 128 161 55 111 168 233
-  232 231 41 209 218 142 47 252 208 248 101 5 185 172 184 160 145 17 87 1 143
-  170 86 216 121 137 90 11 197 195 169 25 169 156 121 73 209 118 148 47 121 135
-  55 69 52 238 187 166 241 138 221 132 251 148 96 187 58 8 111 196 156 218 186 250 123 218 0 246 170 122 172 152
-)
-|#
+                   
                    (#X59 #X1b #X01 #X00 #X00 #X01 #X00 #X00 #X00 #X00 #X00 #X00 #X03 #X77 #X77 #X77
                     #X06 #X67 #X6f #X6f #X67 #X6c #X65 #X02 #X63 #X6f #X02 #X6a #X70 #X00 #X00 #X01 #X00 #X01)
                    (#Xcd #X7f #X81 #X80 #X00 #X01 #X00 #X02 #X00 #X00 #X00 #X00 #X08 #X63 #X6c #X69
@@ -153,11 +127,7 @@
                      )))
                
                
-               (whole 
-                 (loop for each in raws collect 
-                       (make-array (list (length each))
-                                   :element-type 'unsigned-byte
-                                   :initial-contents each))))
+               (whole (loop for each in raws collect (make-ub8-array each))))
 
 
         (is (dnslib.core.parser::concat-byte 0 0) 0)
@@ -168,23 +138,59 @@
         (is (dnslib.core.parser::concat-short 65535 65535) 4294967295)
         (is (dnslib.core.parser::concat-short 255 65535) 16777215)
          
-        (ok (dnslib.core.parser::parse-name tcase_parse-name1 0 0))
+        (ok (dnslib.core.parser::parse-name 
+              tcase_parse-name1 
+              (length tcase_parse-name1)
+              0 0))
 
-        (ok (dnslib.core.parser::parse-header 'dnslib.core.types:dns.header tcase_parse-header1_1 tcase_parse-header1_2 0 1)) 
+        (ok (dnslib.core.parser::parse-header 
+              'dnslib.core.types:dns.header 
+              tcase_parse-header1_1 
+              tcase_parse-header1_2 
+              (length tcase_parse-header1_2)
+              0 1)) 
 
-        (ok (dnslib.core.parser::parse-question 'dnslib.core.types:dns.question tcase_parse-question1_1 tcase_parse-question1_2 0 1))
-        (ok (dnslib.core.parser::parse-question 'dnslib.core.types:dns.question tcase_parse-question2_1 tcase_parse-question2_2 0 1))
-        (ok (dnslib.core.parser::parse-question 'dnslib.core.types:dns.question tcase_parse-question3_1 tcase_parse-question3_2 0 1))
-        (ok (dnslib.core.parser::parse-question 'dnslib.core.types:dns.question tcase_parse-question4_1 tcase_parse-question4_2 0 1))
-        (ok (dnslib.core.parser::parse-question 'dnslib.core.types:dns.question tcase_parse-question5_1 tcase_parse-question5_2 0 1))
-        (ok (dnslib.core.parser::parse-question 'dnslib.core.types:dns.question tcase_parse-question6_1 tcase_parse-question6_2 0 1))
+        (ok (dnslib.core.parser::parse-question 
+              'dnslib.core.types:dns.question 
+              tcase_parse-question1_1 
+              tcase_parse-question1_2
+              (length tcase_parse-question1_2) 0 1))
+
+        (ok (dnslib.core.parser::parse-question 
+              'dnslib.core.types:dns.question 
+              tcase_parse-question2_1 
+              tcase_parse-question2_2
+              (length tcase_parse-question2_2) 0 1))
+        (ok (dnslib.core.parser::parse-question 
+              'dnslib.core.types:dns.question 
+              tcase_parse-question3_1 
+              tcase_parse-question3_2 
+              (length tcase_parse-question3_2) 0 1))
+        (ok (dnslib.core.parser::parse-question 
+              'dnslib.core.types:dns.question 
+              tcase_parse-question4_1 
+              tcase_parse-question4_2 
+              (length tcase_parse-question4_2) 0 1))
+        (ok (dnslib.core.parser::parse-question 
+              'dnslib.core.types:dns.question 
+              tcase_parse-question5_1 
+              tcase_parse-question5_2 
+              (length tcase_parse-question5_2) 0 1))
+        (ok (dnslib.core.parser::parse-question 
+              'dnslib.core.types:dns.question 
+              tcase_parse-question6_1 
+              tcase_parse-question6_2 
+              (length tcase_parse-question6_2) 0 1))
         
-        (loop for each in whole do (ok (dnslib.core.parser:parse each)))
+        (loop for each in whole 
+              do (ok (dnslib.core.parser:parse each)))
 
-        (loop for i from 0 below *random-dns-packet-test*
-              do (ok (test-result-mapper)))
+        (time 
+          (loop for i from 0 below *random-dns-packet-test*
+                do (ok (test-result-mapper))))
         
         ))
+
 
 (print *failers*)
 

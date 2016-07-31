@@ -15,26 +15,34 @@
 (defun concat-byte (msb lsb)
   "msbを上位８bit、lsbを下位8bitとする
    16bitの数を返す"
+  
+  (declare (type fixnum msb lsb))
+  
   (logior (ash msb 8) lsb))
 
 (defun concat-short (msb lsb)
   "msbを上位16bit、lsbを下位16bitとする
    32bitの数を返す"
+
+  (declare (type fixnum msb lsb))
+  
   (logior (ash msb 16) lsb))
 
 
 
-(defun parse-name (ubyte-array start initial-start &optional (flag t))
+(defun parse-name (ubyte-array len start initial-start &optional (flag t))
   "以下を多値で返す:
      - 次のパースで処理を開始すべきポインタ
      - DNSの各ヘッダ中で出現するドメイン名をパースし、
        ラベルのリストにしたもの."
  
+  (declare (type (simple-array (unsigned-byte 8)) ubyte-array))
+  (declare (type fixnum len start initial-start))
+  
   (when (and (<= initial-start start) (not flag))
     (qp-error ubyte-array "pointer must be point foregoing data"))
   
-  (let ((result nil)
-        (len (length ubyte-array)))
+  (let ((result nil))
 
     (unless (< start len)
       (qp-error ubyte-array 
@@ -77,7 +85,7 @@
                (qp-error ubyte-array "pointer must not point header"))
 
              (multiple-value-bind 
-               (_ tmp) (parse-name ubyte-array jump-ptr initial-start nil)
+               (_ tmp) (parse-name ubyte-array len jump-ptr initial-start nil)
                (declare (ignore _))
                (setf result (nconc result tmp))
                (incf start 2)
@@ -89,17 +97,21 @@
 
 
 
-(defun parse-header (placef dns ubyte-array start cnt)
+(defun parse-header (placef dns ubyte-array len start cnt)
   "配列ubyte-arrayの0-12を見てパースしplacefを呼び出し
    dnsの適当な場所にセットする
    また、次のパースで処理を開始すべきポインタを返す"
 
-  (declare (ignore start cnt))
+  (declare (ignore len start cnt))
+  (declare (type (simple-array (unsigned-byte 8)) ubyte-array))
+
   (destructuring-bind 
       (id tmp qdcount ancount nscount arcount)
       (loop for i from 0 upto 10 by 2
-            collect (concat-byte (aref ubyte-array i)
-                            (aref ubyte-array (1+ i))))
+            collect (concat-byte 
+                      (aref ubyte-array i)
+                      (aref ubyte-array (1+ i))))
+      
       (funcall 
         (fdefinition `(setf ,placef))
         (header 
@@ -125,13 +137,17 @@
       12))
 
 
-(defun %parse-qn-ty-cl (len ubyte-array start)
+(defun %parse-qn-ty-cl (ubyte-array len start)
   "aaaの各セクションのはじめの部分と、questionセクション
    は共通しているため、この関数で qname type class をパースし
    多値で返す."
 
+  (declare (type (simple-array (unsigned-byte 8)) ubyte-array))
+  (declare (type fixnum len start))
+
   (multiple-value-bind  
-    (ptr qname) (parse-name ubyte-array start start)
+    (ptr qname) 
+    (parse-name ubyte-array len start start)
               
     (unless (< (+ ptr 3) len)
       (mq-error ubyte-array "(name-type-class) parts too short"))
@@ -143,22 +159,23 @@
       (concat-byte (aref ubyte-array (+ ptr 2)) (aref ubyte-array (+ ptr 3))))))
 
 
-(defun parse-question (placef dns ubyte-array start cnt)
+(defun parse-question (placef dns ubyte-array len start cnt)
   "配列ubyte-arrayのstartからcnt個存在するであろう
    questionをパースをしplacefを呼び出しdnsの適当な場所にセットする
    また、次のパースで処理を開始すべきポインタを返す"
 
-  ;; ubyte-array の長さ,n、pointerから、適切な範囲で配列にアクセスしないと行けない
+  (declare (type (simple-array (unsigned-byte 8)) ubyte-array))
+  (declare (type fixnum len start cnt))
  
-  (let ((len (length ubyte-array))
-        (next start))
+  (let ((next start))
 
     (funcall 
       (fdefinition `(setf ,placef))
       (loop repeat cnt
             collect
             (multiple-value-bind  
-              (ptr qname qtype qclass) (%parse-qn-ty-cl len ubyte-array next)
+              (ptr qname qtype qclass) 
+              (%parse-qn-ty-cl ubyte-array len next)
 
               (setf next ptr)
 
@@ -171,21 +188,25 @@
 
 
 
-(defun parse-aaa (placef dns ubyte-array start cnt)
+(defun parse-aaa (placef dns ubyte-array len start cnt)
   "配列ubyte-arrayのstartからcnt個存在するであろう
    answer,authority,addtionalのいずれか(全て同じフォーマット)をパースをし
    placefを呼び出しdnsの適当な場所にセットする
    また、次のパースで処理を開始すべきポインタを返す"
   
-  (let ((len (length ubyte-array))
-        (next start))
+  (declare (type (simple-array (unsigned-byte 8)) ubyte-array))
+  (declare (type fixnum len start cnt))
+  
+  (let ((next start))
+
     (funcall 
       (fdefinition `(setf ,placef)) 
       (loop 
         repeat cnt
         collect 
         (multiple-value-bind 
-          (ptr name type class) (%parse-qn-ty-cl len ubyte-array next)
+          (ptr name type class) 
+          (%parse-qn-ty-cl ubyte-array len next)
 
           (unless (< (+ ptr 5) len)
             (aaa-error ubyte-array "aaa section too short: can't read TTL"))
@@ -220,17 +241,20 @@
    header,question,answer,authority,additionalの各セクションを実際にパースする
    処理を呼び出し、dns構造体に破壊的にセットする"
 
-  (when (< (length ubyte-array) 12)
-    (dp-error ubyte-array "malformed dns header(too short)"))
-
-  (let ((dns (dns))
+  (declare (type (simple-array (unsigned-byte 8)) ubyte-array))
+  
+  (let ((len (length ubyte-array))
+        (dns (dns))
         (pointer 0))
+
+    (when (< len 12)
+      (dp-error ubyte-array "malformed dns header(too short)")) 
     
-    (setf pointer (parse-header   'dns.header     dns ubyte-array pointer 1)
-          pointer (parse-question 'dns.question   dns ubyte-array pointer (header.qdcount (dns.header dns)))
-          pointer (parse-aaa      'dns.answer     dns ubyte-array pointer (header.ancount (dns.header dns)))
-          pointer (parse-aaa      'dns.authority  dns ubyte-array pointer (header.nscount (dns.header dns)))
-          pointer (parse-aaa      'dns.additional dns ubyte-array pointer (header.arcount (dns.header dns))))
+    (setf pointer (parse-header   'dns.header     dns ubyte-array len pointer 1)
+          pointer (parse-question 'dns.question   dns ubyte-array len pointer (header.qdcount (dns.header dns)))
+          pointer (parse-aaa      'dns.answer     dns ubyte-array len pointer (header.ancount (dns.header dns)))
+          pointer (parse-aaa      'dns.authority  dns ubyte-array len pointer (header.nscount (dns.header dns)))
+          pointer (parse-aaa      'dns.additional dns ubyte-array len pointer (header.arcount (dns.header dns))))
 
     dns))
 
