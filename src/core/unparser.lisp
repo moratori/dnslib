@@ -23,19 +23,60 @@
 |#
 
 
+(defun %sum (list fn)
+  (reduce 
+    (lambda (r x)
+      (+ r (funcall fn x)))
+    list 
+    :initial-value 0))
 
-(defun sizeof-direct (dns)
+(defun name-len (name)
+  "nameは配列のリスト
+   unsigned-byte 8な配列に変換するに当たって何バイト使うか
+   計算して返す"
+  
+  (+ 1 
+     (length name)
+     (loop for each in name sum (length each))))
+
+
+(defmethod size-of-direct ((header header))
+  "dnsヘッダのサイズを返す"
+
+  (declare (ignore header))
+
+  12)
+
+(defmethod size-of-direct ((question question))
+  "dnsのquestionセクションのサイズを返す"
+  
+  (let ((qname (question.qname question)))
+    (+ 4 (name-len qname))))
+
+(defmethod size-of-direct ((rr rr))
+  "resourceレコードのサイズを返す"
+  
+  (+ 
+    (name-len (rr.name rr))
+    2 2 4 2 (rr.rdlength rr)))
+
+(defmethod sizeof-direct ((dns dns))
   "DNS構造体をnameの圧縮なしに配列に変換した場合
    の配列のサイズを返す"
 
   (declare (type dns dns))
-  
-  
-  )
+
+  (let ((fn #'size-of-direct)
+        (targets '(#'dns.question #'dns.answer #'dns.authority #'additional)))
+    (+ 
+      (sizeof-direct (dns.header dns))
+      (loop for tfn in targets sum 
+            (%sum (funcall tfn dns) fn)))))
+
+
 
 (defmethod unparse ((rr rr) arr start)
   "arrのstart以降にリソースレコードを入れる"
-
   
   )
 
@@ -48,6 +89,8 @@
 (defmethod unparse ((header header) arr start)
   "arrのstart以降にheaderを入れる"
 
+
+  12
   )
 
 
