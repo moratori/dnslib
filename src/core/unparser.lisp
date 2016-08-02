@@ -30,6 +30,18 @@
     list 
     :initial-value 0))
 
+(defun split-short (us)
+  "上位8bit,下位8bitで分けてvaluesで返す"
+  (cons
+    (ash us -8)
+    (logand 255 us)))
+
+(defun split-unsignedint (ui)
+  "上位16bit,下位16bitで分けてvaluesで返す"
+  (cons
+    (ash ui -16)
+    (logand 65535 ui)))
+ 
 (defun name-len (name)
   "nameは配列のリスト
    unsigned-byte 8な配列に変換するに当たって何バイト使うか
@@ -38,6 +50,35 @@
   (+ 1 
      (length name)
      (loop for each in name sum (length each))))
+
+(defun set-name (name arr start)
+  "nameをarrのstartから入れて次のポインタを返す"
+
+  (let ((next start))
+    (loop 
+      for label in name
+      do 
+      (setf (aref arr next) (length label))
+      (incf next)
+      (loop 
+        for ch in label
+        do
+        (setf (aref arr next) ch)
+        (incf next)))
+    (setf (aref arr next) 0)
+    (1+ next)))
+
+(defun set-upper8 (n arr start)
+  "上位1byteをarrのstartにセットする"
+
+  (setf (aref arr start) (ash n -8))
+  (1+ start))
+
+(defun set-lower8 (n arr start)
+  "下位1byteをarrのstartにセットする"
+
+  (setf (aref arr start) (logand n 255))
+  (1+ start))
 
 
 (defmethod size-of-direct ((header header))
@@ -78,20 +119,98 @@
 (defmethod unparse ((rr rr) arr start)
   "arrのstart以降にリソースレコードを入れる"
   
-  )
+  (let* ((name (rr.name rr))
+         (type (rr.type rr))
+         (class (rr.class rr))
+         (ttl (rr.ttl rr))
+         (rdlength (rr.rdlength rr))
+         (radta (rr.rdata rr))
+         (next (set-name name arr start)))
+    
+    (set-upper8 type arr next)
+    (set-lower8 type arr  (+ 1 next))
+
+    (set-upper8 class arr (+ 2 next))
+    (set-lower8 class arr (+ 3 next))
+
+    (setf 
+      (aref arr (+ 4 next)) (ash ttl -24)
+      (aref arr (+ 5 next)) (logand (ash ttl -16) 255)
+      (aref arr (+ 6 next)) (logand (ash ttl -8) 255)
+      (aref arr (+ 7 next)) (logand ttl 255))
+
+    (set-upper8 rdlength arr (+ 8 next))
+    (set-lower8 rdlength arr (+ 9 next))
+
+    (let ((i (+ next 10)))
+      (loop 
+        for elm across rdata
+        do 
+        (setf (aref arr i) elm)
+        (incf i))
+      i)))
+
 
 (defmethod unparse ((question question) arr start)
   "arrのstart以降にquestionを入れる"
-
   
-  )
+  (let* ((qname (question.qname question))
+         (qtype (question.qtype question))
+         (qclass (question.qclas question))
+         (next (set-name qname arr start)))
+
+    (set-upper8 qtype arr next)
+    (set-lower8 qtype arr  (+ next 1))
+    
+    (set-upper8 qclass arr (+ next 2))
+    (set-lower8 qclass arr (+ next 3)))
+  (+ next 4))
+
 
 (defmethod unparse ((header header) arr start)
   "arrのstart以降にheaderを入れる"
 
+  (let* ((h header)
 
-  12
-  )
+         (id (header.id h))
+         (qr (header.qr h))
+         (opcode (header.opcode h))
+         (aa (header.aa h))
+         (tc (header.tc h))
+         (rd (header.rd h))
+         
+         (ra (header.ra h))
+         (z (header.z h))
+         (ad (header.ad h))
+         (cd (header.cd h))
+         (rcode (header.rcode h))
+
+         (qdcount (header.qdcount h))
+         (ancount (header.ancount h))
+         (nscount (header.nscount h))
+         (arcount (header.arcount h)))
+
+    (set-upper8 id arr start)
+    (set-lower8 id arr (+ start 1))
+
+    (setf (aref arr (+ start 2)) 
+          (+ (* qr 128) (* opcode 8) (* aa 4) (* tc 2) rd)
+
+          (aref arr (+ start 3)) 
+          (+ (* ra 128) (* z 64) (* ad 32) (* cd 16) rcode))
+
+    (set-upper8 qdcount arr (+ 4 start))
+    (set-lower8 qdcount arr (+ 5 start))
+
+    (set-upper8 ancount arr (+ 6 start))
+    (set-lower8 ancount arr (+ 7 start))
+
+    (set-upper8 nscount arr (+ 8 start))
+    (set-lower8 nscount arr (+ 9 start))
+
+    (set-upper8 arcount arr (+ 10 start))
+    (set-lower8 arcount arr (+ 11 start)))
+  12)
 
 
 
