@@ -30,17 +30,6 @@
     list 
     :initial-value 0))
 
-(defun split-short (us)
-  "上位8bit,下位8bitで分けてvaluesで返す"
-  (cons
-    (ash us -8)
-    (logand 255 us)))
-
-(defun split-unsignedint (ui)
-  "上位16bit,下位16bitで分けてvaluesで返す"
-  (cons
-    (ash ui -16)
-    (logand 65535 ui)))
  
 (defun name-len (name)
   "nameは配列のリスト
@@ -61,7 +50,7 @@
       (setf (aref arr next) (length label))
       (incf next)
       (loop 
-        for ch in label
+        for ch across label
         do
         (setf (aref arr next) ch)
         (incf next)))
@@ -81,20 +70,20 @@
   (1+ start))
 
 
-(defmethod size-of-direct ((header header))
+(defmethod sizeof-direct ((header header))
   "dnsヘッダのサイズを返す"
 
   (declare (ignore header))
 
   12)
 
-(defmethod size-of-direct ((question question))
+(defmethod sizeof-direct ((question question))
   "dnsのquestionセクションのサイズを返す"
   
   (let ((qname (question.qname question)))
     (+ 4 (name-len qname))))
 
-(defmethod size-of-direct ((rr rr))
+(defmethod sizeof-direct ((rr rr))
   "resourceレコードのサイズを返す"
   
   (+ 
@@ -107,8 +96,8 @@
 
   (declare (type dns dns))
 
-  (let ((fn #'size-of-direct)
-        (targets '(#'dns.question #'dns.answer #'dns.authority #'additional)))
+  (let ((fn #'sizeof-direct)
+        (targets (list #'dns.question #'dns.answer #'dns.authority #'dns.additional)))
     (+ 
       (sizeof-direct (dns.header dns))
       (loop for tfn in targets sum 
@@ -124,7 +113,7 @@
          (class (rr.class rr))
          (ttl (rr.ttl rr))
          (rdlength (rr.rdlength rr))
-         (radta (rr.rdata rr))
+         (rdata (rr.rdata rr))
          (next (set-name name arr start)))
     
     (set-upper8 type arr next)
@@ -156,15 +145,16 @@
   
   (let* ((qname (question.qname question))
          (qtype (question.qtype question))
-         (qclass (question.qclas question))
+         (qclass (question.qclass question))
          (next (set-name qname arr start)))
 
     (set-upper8 qtype arr next)
     (set-lower8 qtype arr  (+ next 1))
     
     (set-upper8 qclass arr (+ next 2))
-    (set-lower8 qclass arr (+ next 3)))
-  (+ next 4))
+    (set-lower8 qclass arr (+ next 3))
+
+    (+ next 4)))
 
 
 (defmethod unparse ((header header) arr start)
@@ -229,7 +219,7 @@
 (defun unparse-direct (dns size)
   "DNS構造体からunsigned-byte 8 な配列を返す
    nameの圧縮は行わない
-   ;; sizeは、size-of-directで計算された配列のサイズ"
+   ;; sizeは、sizeof-directで計算された配列のサイズ"
 
   (declare (type dns dns))
 
