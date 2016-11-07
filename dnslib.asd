@@ -20,6 +20,7 @@
                   :components
                    ((:file "errors")
                     (:file "types")
+                    (:file "rdataparser")
                     (:file "parser")
                     (:file "unparser")))
                  (:module "resolver"

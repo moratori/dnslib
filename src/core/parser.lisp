@@ -230,6 +230,7 @@
               :class class
               :ttl ttl
               :rdlength rdlength
+              :arrayptr (+ ptr 6)
               :rdata (subseq ubyte-array (+ ptr 6) (+ ptr 6 rdlength))))))
       dns)
     next))

@@ -86,5 +86,13 @@
   (class 0  :type (integer 0 65535))
   (ttl 0    :type (integer 0 4294967295))
   (rdlength 0 :type (integer 0 65535))
+
+  ;; rdata のパースは、 rr構造体のrdataのみを
+  ;; 参照してパースできる場合と、
+  ;; 生の配列を参照しなければパースできない場合がある
+  ;; (rdataにCNAMEが入ってる場合は、ドメイン名の圧縮が行われている可能性があるため)
+  ;; そのため、 rdataが生の配列のどこから始まるかを arrayptrで保持しておく
+  (arrayptr 0 :type (integer 0 65535))
+
   (rdata nil :type (or null array)))
 
