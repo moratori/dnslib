@@ -11,7 +11,7 @@
   :version "0.1"
   :author ""
   :license ""
-  :depends-on (:usocket)
+  :depends-on (:usocket :sb-cover)
   :components ((:module "src"
                 :components
                 ((:file "dnslib")
