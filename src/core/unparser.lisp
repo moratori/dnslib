@@ -3,6 +3,7 @@
   (:use :cl
         :dnslib.core.types
         :dnslib.core.errors
+        :dnslib.core.util
         )
   (:export 
     :unparse-direct
@@ -22,13 +23,6 @@
   TCフラグを立てるなどの対応が必要
 |#
 
-
-(defun %sum (list fn)
-  (reduce 
-    (lambda (r x)
-      (+ r (funcall fn x)))
-    list 
-    :initial-value 0))
 
  
 (defun name-len (name)
@@ -56,18 +50,6 @@
         (incf next)))
     (setf (aref arr next) 0)
     (1+ next)))
-
-(defun set-upper8 (n arr start)
-  "上位1byteをarrのstartにセットする"
-
-  (setf (aref arr start) (ash n -8))
-  (1+ start))
-
-(defun set-lower8 (n arr start)
-  "下位1byteをarrのstartにセットする"
-
-  (setf (aref arr start) (logand n 255))
-  (1+ start))
 
 
 (defmethod sizeof-direct ((header header))
@@ -101,7 +83,7 @@
     (+ 
       (sizeof-direct (dns.header dns))
       (loop for tfn in targets sum 
-            (%sum (funcall tfn dns) fn)))))
+            (summation (funcall tfn dns) fn)))))
 
 
 

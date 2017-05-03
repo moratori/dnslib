@@ -8,19 +8,26 @@
   (:export 
     :parse
     )
-  )
+  (:documentation
+    "DNSのパケットを表すunsigned 8な配列をparseしDNS構造体を返却する
+     rdataの解釈は行わず、単にバイト配列を切り出すのみ
+     フォーマッティングは行わない
+     rdataの解釈は、evalrdata によって行う"))
 (in-package :dnslib.core.parser)
 
 
 
+
 (defun %parse-name (ubyte-array len start initial-start &optional (flag t))
-  "以下を多値で返す:
-     - 次のパースで処理を開始すべきポインタ
-     - DNSの各ヘッダ中で出現するドメイン名をパースし、
-       ラベルのリストにしたもの."
+  "ubyte-arrayのstartから始めて、ドメイン名のリストを作成する
+   ドメイン名が圧縮されている場合は、ポインタをたどり ドメイン名を取得しにいく
+
+   戻り値は、 (次のパースの始まりのポインタ, ラベルのリスト)
+   %PARSE-NAME :: simple-array(unsigned-byte(8)) -> FIXNUM -> FIXNUM -> FIXNUM -> BOOLEAN -> (FIXNU, LIST)"
  
   (declare (type (simple-array (unsigned-byte 8)) ubyte-array))
   (declare (type fixnum len start initial-start))
+  (declare (type boolean flag))
   
   (when (and (<= initial-start start) (not flag))
     (qp-error ubyte-array "pointer must be point foregoing data"))
@@ -82,7 +89,11 @@
 (defun %parse-qn-ty-cl (ubyte-array len start)
   "aaaの各セクションのはじめの部分と、questionセクション
    は共通しているため、この関数で qname type class をパースし
-   多値で返す."
+   多値で返す.
+
+   戻り値は、 (次のパースの始まりのポインタ,name,type,class)
+   %PARSE-QN-TY-CL :: simple-array(unsigned-byte(8)) -> FIXNUM -> FIXNUM -> (FIXNUM, LIST, FIXNUM, FIXNUM)
+   "
 
   (declare (type (simple-array (unsigned-byte 8)) ubyte-array))
   (declare (type fixnum len start))
@@ -109,7 +120,10 @@
 (defun parse-header (placef dns ubyte-array len start cnt)
   "配列ubyte-arrayの0-12を見てパースしplacefを呼び出し
    dnsの適当な場所にセットする
-   また、次のパースで処理を開始すべきポインタを返す"
+   また、次のパースで処理を開始すべきポインタを返す
+   
+   戻り値は、次のパースで処理を開始すべきポインタ
+   parse-header :: SYMBOL -> DNS -> simple-array(unsigned-byte(8)) -> FIXNUM -> FIXNUM -> FIXNUM -> FIXNUM"
 
   (declare (ignore len start cnt))
   (declare (type (simple-array (unsigned-byte 8)) ubyte-array))
@@ -150,10 +164,15 @@
 (defun parse-question (placef dns ubyte-array len start cnt)
   "配列ubyte-arrayのstartからcnt個存在するであろう
    questionをパースをしplacefを呼び出しdnsの適当な場所にセットする
-   また、次のパースで処理を開始すべきポインタを返す"
+   また、次のパースで処理を開始すべきポインタを返す
+   
+   戻り値は、次のパースで処理を開始すべきポインタ
+   parse-question :: SYMBOL -> DNS -> simple-array(unsigned-byte(8)) -> FIXNUM -> FIXNUM -> FIXNUM -> FIXNUM
+   "
 
   (declare (type (simple-array (unsigned-byte 8)) ubyte-array))
   (declare (type fixnum len start cnt))
+  (declare (type symbol placef))
  
   (let ((next start))
 
@@ -179,11 +198,14 @@
 (defun parse-aaa (placef dns ubyte-array len start cnt)
   "配列ubyte-arrayのstartからcnt個存在するであろう
    answer,authority,addtionalのいずれか(全て同じフォーマット)をパースをし
-   placefを呼び出しdnsの適当な場所にセットする
-   また、次のパースで処理を開始すべきポインタを返す"
+   placefを呼び出しdns構造体の適当な場所にセットする
+
+   戻り値は、次のパースで処理を開始すべきポインタ
+   PARSE-AAA ::  SYMBOL -> DNS -> simple-array(unsigned-byte(8)) -> FIXNUM -> FIXNUM -> FIXNUM -> FIXNUM"
   
   (declare (type (simple-array (unsigned-byte 8)) ubyte-array))
   (declare (type fixnum len start cnt))
+  (declare (type symbol placef))
   
   (let ((next start))
 
@@ -226,8 +248,11 @@
 
 (defun parse (ubyte-array)
   "unsigned-byteの配列からdns構造体を作って返す
-   header,question,answer,authority,additionalの各セクションを実際にパースする
-   処理を呼び出し、dns構造体に破壊的にセットする"
+   header,question,answer,authority,additionalの各セクションを実際にパースする処理を呼び出し、
+   dns構造体に破壊的にセットする
+   
+   戻り値は、DNS構造体
+   PARSE ::  simple-array(unsigned-byte(8)) -> DNS"
 
   (declare (type (simple-array (unsigned-byte 8)) ubyte-array))
   

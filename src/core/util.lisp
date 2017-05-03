@@ -7,9 +7,43 @@
   (:export 
     :concat-byte
     :concat-short
+    :code-to-string
+    :summation
+    :set-upper8
+    :set-lower8
     )
   )
 (in-package :dnslib.core.util)
+
+
+(defun summation (list fn)
+  (reduce 
+    (lambda (r x)
+      (+ r (funcall fn x)))
+    list 
+    :initial-value 0))
+
+
+(defun code-to-string (codes)
+  "キャラクタコードの配列のリストを文字列のリストに変換する"
+  (loop for arr in codes
+        collect 
+        (coerce 
+          (mapcar #'code-char (coerce arr 'list))
+          'string)))
+
+
+(defun set-upper8 (n arr start)
+  "上位1byteをarrのstartにセットする"
+
+  (setf (aref arr start) (ash n -8))
+  (1+ start))
+
+(defun set-lower8 (n arr start)
+  "下位1byteをarrのstartにセットする"
+
+  (setf (aref arr start) (logand n 255))
+  (1+ start))
 
 
 
