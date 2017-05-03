@@ -3,6 +3,11 @@
   (:use :cl
         )
   (:export 
+    :mes
+    :data
+
+    :data-parse-error
+    
     :qp-error
     :qt-error
     :ql-error
@@ -43,9 +48,11 @@
 
 (define-condition data-parse-error (error)
   ((data
+     :accessor data
      :initform nil
-     :initarg :raw)
+     :initarg :data)
    (mes 
+     :accessor mes
      :initform "parse error"
      :initarg :mes)))
 

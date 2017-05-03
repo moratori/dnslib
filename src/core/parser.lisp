@@ -3,6 +3,7 @@
   (:use :cl
         :dnslib.core.types
         :dnslib.core.errors
+        :dnslib.core.util
         )
   (:export 
     :parse
@@ -12,25 +13,7 @@
 
 
 
-(defun concat-byte (msb lsb)
-  "msbを上位８bit、lsbを下位8bitとする
-   16bitの数を返す"
-  
-  (declare (type fixnum msb lsb))
-  
-  (logior (ash msb 8) lsb))
-
-(defun concat-short (msb lsb)
-  "msbを上位16bit、lsbを下位16bitとする
-   32bitの数を返す"
-
-  (declare (type fixnum msb lsb))
-  
-  (logior (ash msb 16) lsb))
-
-
-
-(defun parse-name (ubyte-array len start initial-start &optional (flag t))
+(defun %parse-name (ubyte-array len start initial-start &optional (flag t))
   "以下を多値で返す:
      - 次のパースで処理を開始すべきポインタ
      - DNSの各ヘッダ中で出現するドメイン名をパースし、
@@ -58,7 +41,7 @@
 
         ;; 圧縮されていない場合の処理
         ((zerop msb2) 
-
+         
          (when (zerop label-len)
            (incf start)
            (return-from exit))
@@ -85,15 +68,41 @@
                (qp-error ubyte-array "pointer must not point header"))
 
              (multiple-value-bind 
-               (_ tmp) (parse-name ubyte-array len jump-ptr initial-start nil)
+               (_ tmp) (%parse-name ubyte-array len jump-ptr initial-start nil)
                (declare (ignore _))
                (setf result (nconc result tmp))
                (incf start 2)
                (return-from exit))))
         (t 
-         (qp-error ubyte-array "malformed upper bit"))))
+         (qp-error msb2 "malformed upper bit"))))
     
     (values start result)))
+
+
+(defun %parse-qn-ty-cl (ubyte-array len start)
+  "aaaの各セクションのはじめの部分と、questionセクション
+   は共通しているため、この関数で qname type class をパースし
+   多値で返す."
+
+  (declare (type (simple-array (unsigned-byte 8)) ubyte-array))
+  (declare (type fixnum len start))
+
+  (multiple-value-bind  
+    (ptr qname) 
+    (%parse-name ubyte-array len start start)
+              
+    (unless (< (+ ptr 3) len)
+      (mq-error ubyte-array "(name-type-class) parts too short"))
+
+    (values 
+      (+ ptr 4)
+      qname
+      (concat-byte (aref ubyte-array ptr) (aref ubyte-array (1+ ptr)))
+      (concat-byte (aref ubyte-array (+ ptr 2)) (aref ubyte-array (+ ptr 3))))))
+
+
+
+
 
 
 
@@ -136,27 +145,6 @@
         dns)
       12))
 
-
-(defun %parse-qn-ty-cl (ubyte-array len start)
-  "aaaの各セクションのはじめの部分と、questionセクション
-   は共通しているため、この関数で qname type class をパースし
-   多値で返す."
-
-  (declare (type (simple-array (unsigned-byte 8)) ubyte-array))
-  (declare (type fixnum len start))
-
-  (multiple-value-bind  
-    (ptr qname) 
-    (parse-name ubyte-array len start start)
-              
-    (unless (< (+ ptr 3) len)
-      (mq-error ubyte-array "(name-type-class) parts too short"))
-
-    (values 
-      (+ ptr 4)
-      qname
-      (concat-byte (aref ubyte-array ptr) (aref ubyte-array (1+ ptr)))
-      (concat-byte (aref ubyte-array (+ ptr 2)) (aref ubyte-array (+ ptr 3))))))
 
 
 (defun parse-question (placef dns ubyte-array len start cnt)

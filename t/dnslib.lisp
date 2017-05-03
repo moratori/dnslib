@@ -2,6 +2,7 @@
 (defpackage dnslib-test
   (:use :cl
         :prove
+        :dnslib.core.errors
         ))
 (in-package :dnslib-test)
 
@@ -13,7 +14,7 @@
 (setf *random-state* (make-random-state t))
 
 (defvar *real-dnspayload* (eval (read (open "t/dnspayload"))))
-(defvar *random-dns-packet-test* 30000)
+(defvar *random-dns-packet-test* 50000)
 (defvar *failers* nil)
 
 
@@ -54,12 +55,22 @@
 (subtest "TESTING: PARSE(UNPARSE(PARSE(REAL_PAYLOAD)))"
    (loop for _ in *real-dnspayload*
          for raw  = (make-ub8-array _)
-         do (ok 
-              (let ((obj1 (dnslib.core.parser:parse raw)))
-                (dnslib.core.parser:parse 
+         do
+         (handler-case 
+           (ok 
+             (handler-case
+               (let ((obj1 (dnslib.core.parser:parse raw)))
+                (print obj1)
+                (equalp 
+                  obj1
+                 (dnslib.core.parser:parse 
                   (dnslib.core.unparser:unparse-direct
                     obj1
-                    (dnslib.core.unparser:sizeof-direct obj1)))))))
+                    (dnslib.core.unparser:sizeof-direct obj1))))) 
+               (data-parse-error (err)
+                 (print (mes err))
+                 (print (data err))
+                 nil))))))
 
 
 
@@ -67,3 +78,7 @@
 
 (finalize)
 
+
+(sb-cover:report 
+  (merge-pathnames #P"coverage/"
+    (asdf:system-source-directory :dnslib)))

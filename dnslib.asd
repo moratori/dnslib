@@ -13,6 +13,20 @@
   :license ""
   :depends-on (:usocket :sb-cover)
   :components ((:module "src"
+                :around-compile 
+                 (lambda (thunk)
+
+                   (declaim (optimize
+                              (debug 3)
+                              (safety 3)
+                              (speed 0)
+                              (space 0)
+                              (compilation-speed 0)))
+                   #+sbcl
+                   (declaim (optimize 
+                              (sb-cover:store-coverage-data 3)))
+
+                   (funcall thunk))
                 :components
                 ((:file "dnslib")
                  (:module "core"
@@ -20,6 +34,7 @@
                   :components
                    ((:file "errors")
                     (:file "types")
+                    (:file "util")
                     (:file "parser")
                     (:file "unparser")))
                  (:module "resolver"
