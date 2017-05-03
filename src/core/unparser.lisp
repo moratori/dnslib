@@ -24,34 +24,6 @@
 |#
 
 
- 
-(defun name-len (name)
-  "nameは配列のリスト
-   unsigned-byte 8な配列に変換するに当たって何バイト使うか
-   計算して返す"
-  
-  (+ 1 
-     (length name)
-     (loop for each in name sum (length each))))
-
-(defun set-name (name arr start)
-  "nameをarrのstartから入れて次のポインタを返す"
-
-  (let ((next start))
-    (loop 
-      for label in name
-      do 
-      (setf (aref arr next) (length label))
-      (incf next)
-      (loop 
-        for ch across label
-        do
-        (setf (aref arr next) ch)
-        (incf next)))
-    (setf (aref arr next) 0)
-    (1+ next)))
-
-
 (defmethod sizeof-direct ((header header))
   "dnsヘッダのサイズを返す"
 
@@ -235,6 +207,7 @@
    の配列のサイズを返す"
 
   (declare (ignore dns))
+
   -1
   )
 

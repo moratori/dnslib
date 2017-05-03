@@ -18,80 +18,13 @@
 
 
 
-(defun %parse-name (ubyte-array len start initial-start &optional (flag t))
-  "ubyte-arrayのstartから始めて、ドメイン名のリストを作成する
-   ドメイン名が圧縮されている場合は、ポインタをたどり ドメイン名を取得しにいく
-
-   戻り値は、 (次のパースの始まりのポインタ, ラベルのリスト)
-   %PARSE-NAME :: simple-array(unsigned-byte(8)) -> FIXNUM -> FIXNUM -> FIXNUM -> BOOLEAN -> (FIXNU, LIST)"
- 
-  (declare (type (simple-array (unsigned-byte 8)) ubyte-array))
-  (declare (type fixnum len start initial-start))
-  (declare (type boolean flag))
-  
-  (when (and (<= initial-start start) (not flag))
-    (qp-error ubyte-array "pointer must be point foregoing data"))
-  
-  (let ((result nil))
-
-    (unless (< start len)
-      (qp-error ubyte-array 
-                (format nil "pointer(~A) must be less than ~A"
-                        start len)))
-    
-    (loop 
-      named exit
-      for label-len = (aref ubyte-array start)
-      for msb2 = (ash label-len -6) ;; 上位2bitを計算
-      do 
-      (cond 
-
-        ;; 圧縮されていない場合の処理
-        ((zerop msb2) 
-         
-         (when (zerop label-len)
-           (incf start)
-           (return-from exit))
-
-         (unless (<= (1+ start) (+ 1 start label-len) len)
-           (ql-error ubyte-array "label length too long for array"))
-
-         (setf result (nconc result (list (subseq ubyte-array (1+ start) (+ 1 start label-len)))))
-         (incf start (1+ label-len))
-
-         (when (< (1- len) start)
-           (qt-error ubyte-array "qname must be end with zero" )))
-
-        ;; 上位2bitが11だったら圧縮されてる
-        ((= msb2 3) 
-
-           (unless (< (1+ start)  len)
-             (qp-error ubyte-array "14bit is required for compression pointer"))
-
-           (let* ((next (aref ubyte-array (1+ start)))
-                  (jump-ptr (logior (ash (logand label-len #X3F) 8) next)))
-
-             (when (<= 0 jump-ptr 11)
-               (qp-error ubyte-array "pointer must not point header"))
-
-             (multiple-value-bind 
-               (_ tmp) (%parse-name ubyte-array len jump-ptr initial-start nil)
-               (declare (ignore _))
-               (setf result (nconc result tmp))
-               (incf start 2)
-               (return-from exit))))
-        (t 
-         (qp-error msb2 "malformed upper bit"))))
-    
-    (values start result)))
-
 
 (defun %parse-qn-ty-cl (ubyte-array len start)
   "aaaの各セクションのはじめの部分と、questionセクション
    は共通しているため、この関数で qname type class をパースし
    多値で返す.
 
-   戻り値は、 (次のパースの始まりのポインタ,name,type,class)
+   戻り値: (次のパースの始まりのポインタ,name,type,class)
    %PARSE-QN-TY-CL :: simple-array(unsigned-byte(8)) -> FIXNUM -> FIXNUM -> (FIXNUM, LIST, FIXNUM, FIXNUM)
    "
 
@@ -99,8 +32,10 @@
   (declare (type fixnum len start))
 
   (multiple-value-bind  
-    (ptr qname) 
-    (%parse-name ubyte-array len start start)
+    (cf ptr qname) 
+    (%parse-name ubyte-array len start)
+
+    (declare (ignore cf))
               
     (unless (< (+ ptr 3) len)
       (mq-error ubyte-array "(name-type-class) parts too short"))
@@ -122,7 +57,7 @@
    dnsの適当な場所にセットする
    また、次のパースで処理を開始すべきポインタを返す
    
-   戻り値は、次のパースで処理を開始すべきポインタ
+   戻り値: 次のパースで処理を開始すべきポインタ
    parse-header :: SYMBOL -> DNS -> simple-array(unsigned-byte(8)) -> FIXNUM -> FIXNUM -> FIXNUM -> FIXNUM"
 
   (declare (ignore len start cnt))
@@ -166,7 +101,7 @@
    questionをパースをしplacefを呼び出しdnsの適当な場所にセットする
    また、次のパースで処理を開始すべきポインタを返す
    
-   戻り値は、次のパースで処理を開始すべきポインタ
+   戻り値: 次のパースで処理を開始すべきポインタ
    parse-question :: SYMBOL -> DNS -> simple-array(unsigned-byte(8)) -> FIXNUM -> FIXNUM -> FIXNUM -> FIXNUM
    "
 
@@ -200,7 +135,7 @@
    answer,authority,addtionalのいずれか(全て同じフォーマット)をパースをし
    placefを呼び出しdns構造体の適当な場所にセットする
 
-   戻り値は、次のパースで処理を開始すべきポインタ
+   戻り値: 次のパースで処理を開始すべきポインタ
    PARSE-AAA ::  SYMBOL -> DNS -> simple-array(unsigned-byte(8)) -> FIXNUM -> FIXNUM -> FIXNUM -> FIXNUM"
   
   (declare (type (simple-array (unsigned-byte 8)) ubyte-array))
@@ -251,7 +186,7 @@
    header,question,answer,authority,additionalの各セクションを実際にパースする処理を呼び出し、
    dns構造体に破壊的にセットする
    
-   戻り値は、DNS構造体
+   戻り値: DNS構造体
    PARSE ::  simple-array(unsigned-byte(8)) -> DNS"
 
   (declare (type (simple-array (unsigned-byte 8)) ubyte-array))

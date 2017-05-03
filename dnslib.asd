@@ -37,7 +37,7 @@
                     (:file "util")
                     (:file "parser")
                     (:file "unparser")
-                    (:file "evalrdata")))
+                    (:file "evaldata")))
                  (:module "resolver"
                   :serial t
                   :components
