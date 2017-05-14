@@ -20,15 +20,15 @@ table.summary tr td { text-align: right }
 table.summary tr.even { background-color: #eeeeff }
 table.summary tr.subheading { background-color: #aaaaff}
 table.summary tr.subheading td { text-align: left; font-weight: bold; padding-left: 5ex; }
-</style></head><body><h3>Coverage report: /home/moratori/Github/dnslib/src/core/evaldata.lisp <br />
+</style></head><body><h3>Coverage report: /home/moratori/Github/dnslib/src/core/decoder.lisp <br />
 </h3>
-<table class='summary'><tr class='head-row'><td width='80px'>Kind</td><td width='80px'>Covered</td><td width='80px'>All</td><td width='80px'>%</td><tr class='odd'><td>expression</td><td>64</td><td>66</td><td> 97.0</td></tr>
+<table class='summary'><tr class='head-row'><td width='80px'>Kind</td><td width='80px'>Covered</td><td width='80px'>All</td><td width='80px'>%</td><tr class='odd'><td>expression</td><td>77</td><td>79</td><td> 97.5</td></tr>
 <tr class='even'><td>branch</td><td>1</td><td>2</td><td> 50.0</td></tr>
 </table><div class='key'><b>Key</b><br />
 <div class='state-0'>Not instrumented</div><div class='state-15'>Conditionalized out</div><div class='state-1'>Executed</div><div class='state-2'>Not executed</div><div>&#160;</div><div class='state-5'>Both branches taken</div><div class='state-6'>One branch taken</div><div class='state-10''>Neither branch taken</div></div><nobr><div><code>
 </code></div></nobr>
 <nobr><div class='source'><div class='line-number'><code>1</code></div><code>&#160;<span class='state-0'>&#40;in&#45;package&#160;&#58;cl&#45;user&#41;</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>2</code></div><code>&#160;<span class='state-0'>&#40;defpackage&#160;dnslib&#46;core&#46;evaldata</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>2</code></div><code>&#160;<span class='state-0'>&#40;defpackage&#160;dnslib&#46;core&#46;decoder</span></code></div></nobr>
 <nobr><div class='source'><div class='line-number'><code>3</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#40;&#58;use&#160;&#58;cl</span></code></div></nobr>
 <nobr><div class='source'><div class='line-number'><code>4</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#58;dnslib&#46;core&#46;types</span></code></div></nobr>
 <nobr><div class='source'><div class='line-number'><code>5</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#58;dnslib&#46;core&#46;errors</span></code></div></nobr>
@@ -39,7 +39,7 @@ table.summary tr.subheading td { text-align: left; font-weight: bold; padding-le
 <nobr><div class='source'><div class='line-number'><code>10</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#160;&#160;&#41;</span></code></div></nobr>
 <nobr><div class='source'><div class='line-number'><code>11</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#40;&#58;documentation</span></code></div></nobr>
 <nobr><div class='source'><div class='line-number'><code>12</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#160;&#160;&#34;RR構造体のrdata部分のバイト配列をパースし解釈する&#34;&#41;&#41;</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>13</code></div><code>&#160;<span class='state-0'>&#40;in&#45;package&#160;&#58;dnslib&#46;core&#46;evaldata&#41;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>13</code></div><code>&#160;<span class='state-0'>&#40;in&#45;package&#160;&#58;dnslib&#46;core&#46;decoder&#41;</span></code></div></nobr>
 <nobr><div class='source'><div class='line-number'><code>14</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
 <nobr><div class='source'><div class='line-number'><code>15</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
 <nobr><div class='source'><div class='line-number'><code>16</code></div><code>&#160;<span class='state-1'>&#40;defmethod&#160;decode&#160;&#40;&#40;type&#160;&#40;eql&#160;2&#41;&#41;&#160;rdata&#160;rdata&#45;len&#160;ubyte&#45;array&#160;ubyte&#45;array&#45;len&#41;</span><span class='state-0'></span></code></div></nobr>
@@ -90,11 +90,48 @@ table.summary tr.subheading td { text-align: left; font-weight: bold; padding-le
 <nobr><div class='source'><div class='line-number'><code>61</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#160;&#160;&#160;&#160;collect&#160;&#40;format&#160;nil&#160;&#34;&#126;x&#34;&#160;&#40;concat&#45;byte&#160;&#40;aref&#160;rdata&#160;i&#41;&#160;&#40;aref&#160;rdata&#160;&#40;1&#43;&#160;i&#41;&#41;&#41;&#41;&#41;&#41;</span><span class='state-0'></span></code></div></nobr>
 <nobr><div class='source'><div class='line-number'><code>62</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
 <nobr><div class='source'><div class='line-number'><code>63</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>64</code></div><code>&#160;<span class='state-1'>&#40;defmethod&#160;decode&#160;&#40;&#40;type&#160;number&#41;&#160;rdata&#160;rdata&#45;len&#160;ubyte&#45;array&#160;ubyte&#45;array&#45;len&#41;</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>65</code></div><code>&#160;<span class='state-1'>&#160;&#160;nil&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>64</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>65</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
 <nobr><div class='source'><div class='line-number'><code>66</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>67</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>68</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>67</code></div><code>&#160;<span class='state-1'>&#40;defmethod&#160;decode&#160;&#40;&#40;type&#160;&#40;eql&#160;6&#41;&#41;&#160;rdata&#160;rdata&#45;len&#160;ubyte&#45;array&#160;ubyte&#45;array&#45;len&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>68</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#34;SOAレコードのRRについてRDATAをパースする&#34;</span><span class='state-0'></span></code></div></nobr>
 <nobr><div class='source'><div class='line-number'><code>69</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>70</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>71</code></div><code>&#160;<span class='state-0'>&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;</code></div></body></html>
+<nobr><div class='source'><div class='line-number'><code>70</code></div><code>&#160;<span class='state-1'>&#160;&#160;rdata</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>71</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>72</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>73</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>74</code></div><code>&#160;<span class='state-1'>&#40;defmethod&#160;decode&#160;&#40;&#40;type&#160;&#40;eql&#160;46&#41;&#41;&#160;rdata&#160;rdata&#45;len&#160;ubyte&#45;array&#160;ubyte&#45;array&#45;len&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>75</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#34;RRSIGレコードのRRについてRDATAをパースする&#34;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>76</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>77</code></div><code>&#160;<span class='state-1'>&#160;&#160;rdata</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>78</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>79</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>80</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>81</code></div><code>&#160;<span class='state-1'>&#40;defmethod&#160;decode&#160;&#40;&#40;type&#160;&#40;eql&#160;47&#41;&#41;&#160;rdata&#160;rdata&#45;len&#160;ubyte&#45;array&#160;ubyte&#45;array&#45;len&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>82</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#34;NSECレコードのRRについてRDATAをパースする&#34;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>83</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>84</code></div><code>&#160;<span class='state-1'>&#160;&#160;rdata</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>85</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>86</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>87</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>88</code></div><code>&#160;<span class='state-1'>&#40;defmethod&#160;decode&#160;&#40;&#40;type&#160;&#40;eql&#160;48&#41;&#41;&#160;rdata&#160;rdata&#45;len&#160;ubyte&#45;array&#160;ubyte&#45;array&#45;len&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>89</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#34;DNSKEYレコードのRRについてRDATAをパースする&#34;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>90</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>91</code></div><code>&#160;<span class='state-1'>&#160;&#160;rdata</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>92</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>93</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>94</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>95</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>96</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>97</code></div><code>&#160;<span class='state-1'>&#40;defmethod&#160;decode&#160;&#40;&#40;type&#160;number&#41;&#160;rdata&#160;rdata&#45;len&#160;ubyte&#45;array&#160;ubyte&#45;array&#45;len&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>98</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#40;warn&#160;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>99</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#160;&#160;&#40;make&#45;condition&#160;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>100</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#160;&#160;&#160;&#160;&#39;data&#45;decode&#45;error</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>101</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#160;&#160;&#160;&#160;&#58;data&#160;type&#41;&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>102</code></div><code>&#160;<span class='state-1'>&#160;&#160;rdata&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>103</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>104</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>105</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>106</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>107</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>108</code></div><code>&#160;<span class='state-0'>&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;&#0;</code></div></body></html>

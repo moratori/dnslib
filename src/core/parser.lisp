@@ -4,6 +4,7 @@
         :dnslib.core.types
         :dnslib.core.errors
         :dnslib.core.util
+        :dnslib.core.decoder
         )
   (:export 
     :parse
@@ -12,10 +13,8 @@
     "DNSのパケットを表すunsigned 8な配列をparseしDNS構造体を返却する
      rdataの解釈は行わず、単にバイト配列を切り出すのみ
      フォーマッティングは行わない
-     rdataの解釈は、evalrdata によって行う"))
+     rdataの解釈は、decoder によって行う"))
 (in-package :dnslib.core.parser)
-
-
 
 
 
@@ -47,12 +46,69 @@
       (concat-byte (aref ubyte-array (+ ptr 2)) (aref ubyte-array (+ ptr 3))))))
 
 
+(defun %parse-resource-record (placef dns ubyte-array len start cnt)
+  "配列ubyte-arrayのstartからcnt個存在するであろう
+   answer,authority,addtionalのいずれか(全て同じフォーマット)をパースをし
+   placefを呼び出しdns構造体の適当な場所にセットする
+
+   戻り値: 次のパースで処理を開始すべきポインタ
+   %PARSE-RESOURCE-RECORD ::  SYMBOL -> DNS -> simple-array(unsigned-byte(8)) -> FIXNUM -> FIXNUM -> FIXNUM -> FIXNUM"
+
+  (declare (type (simple-array (unsigned-byte 8)) ubyte-array))
+  (declare (type fixnum len start cnt))
+  (declare (type symbol placef))
+
+  (let ((next start))
+
+    (funcall 
+      (fdefinition `(setf ,placef)) 
+      (loop 
+        repeat cnt
+        collect 
+        (multiple-value-bind 
+          (ptr name type class) 
+          (%parse-qn-ty-cl ubyte-array len next)
+
+          (unless (< (+ ptr 5) len)
+            (aaa-error ubyte-array "aaa section too short: can't read TTL"))
+
+          (let ((ttl 
+                  (concat-short 
+                    (concat-byte (aref ubyte-array ptr) (aref ubyte-array (1+ ptr)))
+                    (concat-byte (aref ubyte-array (+ ptr 2)) (aref ubyte-array (+ ptr 3)))))
+                (rdlength 
+                  (concat-byte 
+                    (aref ubyte-array (+ ptr 4)) (aref ubyte-array (+ ptr 5)))))
+            
+            (unless (< (+ ptr 5 rdlength) len)
+              (aaa-error ubyte-array "aaa section too short: can't read RDATA"))
+
+            (setf next (+ ptr 5 rdlength 1)) 
+
+            (rr
+              :name name
+              :type type
+              :class class
+              :ttl ttl
+              :rdlength rdlength ;; この rdlength はrdataの長さを必ずしも表さないことに注意(具体的には、 rdlength < len(rdata) となる場合がある)
+              :rdata             ;; 例えば rdata に name が含まれており且つペイロードの中で既出の場合
+              (decode            ;; rdata は単なるポインタとなることが考えられ、 rdlength は単にポインタ自体の長さを表すことになる
+                type             ;; PARSER の挙動としては単にポインタ自体を返すのではなくポイントされているデータ自体を返すため
+                                 ;; rdata の大きさは rdlength で表される大きさよりも大きくなりうる
+                #0=(subseq ubyte-array (+ ptr 6) (+ ptr 6 rdlength))
+                (length #0#)
+                ubyte-array
+                len)))))
+      dns)
+    next))
 
 
 
+(defgeneric parse-section (placef dns ubyte-array len start cnt)
+  (:documentation ""))
 
 
-(defun parse-header (placef dns ubyte-array len start cnt)
+(defmethod parse-section ((placef (eql 'dns.header)) dns ubyte-array len start cnt)
   "配列ubyte-arrayの0-12を見てパースしplacefを呼び出し
    dnsの適当な場所にセットする
    また、次のパースで処理を開始すべきポインタを返す
@@ -95,8 +151,7 @@
       12))
 
 
-
-(defun parse-question (placef dns ubyte-array len start cnt)
+(defmethod parse-section ((placef (eql 'dns.question)) dns ubyte-array len start cnt)
   "配列ubyte-arrayのstartからcnt個存在するであろう
    questionをパースをしplacefを呼び出しdnsの適当な場所にセットする
    また、次のパースで処理を開始すべきポインタを返す
@@ -108,7 +163,7 @@
   (declare (type (simple-array (unsigned-byte 8)) ubyte-array))
   (declare (type fixnum len start cnt))
   (declare (type symbol placef))
- 
+
   (let ((next start))
 
     (funcall 
@@ -128,62 +183,23 @@
       dns)
     next))
 
+(defmethod parse-section ((placef (eql 'dns.answer)) dns ubyte-array len start cnt)
+  (%parse-resource-record placef dns ubyte-array len start cnt))
+
+(defmethod parse-section ((placef (eql 'dns.authority)) dns ubyte-array len start cnt)
+  (%parse-resource-record placef dns ubyte-array len start cnt))
+
+(defmethod parse-section ((placef (eql 'dns.additional)) dns ubyte-array len start cnt)
+  (%parse-resource-record placef dns ubyte-array len start cnt))
 
 
-(defun parse-aaa (placef dns ubyte-array len start cnt)
-  "配列ubyte-arrayのstartからcnt個存在するであろう
-   answer,authority,addtionalのいずれか(全て同じフォーマット)をパースをし
-   placefを呼び出しdns構造体の適当な場所にセットする
 
-   戻り値: 次のパースで処理を開始すべきポインタ
-   PARSE-AAA ::  SYMBOL -> DNS -> simple-array(unsigned-byte(8)) -> FIXNUM -> FIXNUM -> FIXNUM -> FIXNUM"
-  
-  (declare (type (simple-array (unsigned-byte 8)) ubyte-array))
-  (declare (type fixnum len start cnt))
-  (declare (type symbol placef))
-  
-  (let ((next start))
-
-    (funcall 
-      (fdefinition `(setf ,placef)) 
-      (loop 
-        repeat cnt
-        collect 
-        (multiple-value-bind 
-          (ptr name type class) 
-          (%parse-qn-ty-cl ubyte-array len next)
-
-          (unless (< (+ ptr 5) len)
-            (aaa-error ubyte-array "aaa section too short: can't read TTL"))
-
-          (let ((ttl 
-                  (concat-short 
-                    (concat-byte (aref ubyte-array ptr) (aref ubyte-array (1+ ptr)))
-                    (concat-byte (aref ubyte-array (+ ptr 2)) (aref ubyte-array (+ ptr 3)))))
-                (rdlength 
-                  (concat-byte 
-                    (aref ubyte-array (+ ptr 4)) (aref ubyte-array (+ ptr 5)))))
-            
-            (unless (< (+ ptr 5 rdlength) len)
-              (aaa-error ubyte-array "aaa section too short: can't read RDATA"))
-
-            (setf next (+ ptr 5 rdlength 1)) 
-
-            (rr
-              :name name
-              :type type
-              :class class
-              :ttl ttl
-              :rdlength rdlength
-              :rdata (subseq ubyte-array (+ ptr 6) (+ ptr 6 rdlength))))))
-      dns)
-    next))
 
 
 
 (defun parse (ubyte-array)
-  "unsigned-byteの配列からdns構造体を作って返す
-   header,question,answer,authority,additionalの各セクションを実際にパースする処理を呼び出し、
+  "unsigned-byte 8 の配列からdns構造体を作って返す
+   header,question,answer,authority,additionalの各セクションをパースする処理を呼び出し、
    dns構造体に破壊的にセットする
    
    戻り値: DNS構造体
@@ -198,11 +214,11 @@
     (when (< len 12)
       (dp-error ubyte-array "malformed dns header(too short)")) 
     
-    (setf pointer (parse-header   'dns.header     dns ubyte-array len pointer 1)
-          pointer (parse-question 'dns.question   dns ubyte-array len pointer (header.qdcount (dns.header dns)))
-          pointer (parse-aaa      'dns.answer     dns ubyte-array len pointer (header.ancount (dns.header dns)))
-          pointer (parse-aaa      'dns.authority  dns ubyte-array len pointer (header.nscount (dns.header dns)))
-          pointer (parse-aaa      'dns.additional dns ubyte-array len pointer (header.arcount (dns.header dns))))
+    (setf pointer (parse-section 'dns.header     dns ubyte-array len pointer 1)
+          pointer (parse-section 'dns.question   dns ubyte-array len pointer (header.qdcount (dns.header dns)))
+          pointer (parse-section 'dns.answer     dns ubyte-array len pointer (header.ancount (dns.header dns)))
+          pointer (parse-section 'dns.authority  dns ubyte-array len pointer (header.nscount (dns.header dns)))
+          pointer (parse-section 'dns.additional dns ubyte-array len pointer (header.arcount (dns.header dns))))
 
     dns))
 

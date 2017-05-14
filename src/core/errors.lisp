@@ -14,11 +14,18 @@
     :dp-error
     :mq-error
     :aaa-error
+
+    :data-decode-error
+    :data-encode-error
+    
     )
   )
 (in-package :dnslib.core.errors)
 
 
+(defun raise-condition (condname data mes)
+  (error 
+    (make-condition condname :data data :mes mes)))
 
 (defun qp-error (data mes)
   (raise-condition 'qname-pointer-error data mes))
@@ -37,12 +44,7 @@
  
 (defun aaa-error (data mes)
   (raise-condition 'malformed-aaa-section-error data mes))
- 
 
-
-(defun raise-condition (condname data mes)
-  (error 
-    (make-condition condname :data data :mes mes)))
 
 
 
@@ -76,4 +78,31 @@
 (define-condition malformed-aaa-section-error (data-parse-error)
   ()
   )
+
+
+
+
+
+(define-condition data-encode-error (error)
+  ((mes 
+     :accessor mes
+     :initform ""
+     :initarg :mes)))
+
+
+
+(define-condition data-decode-error (warning)
+  ((mes 
+     :accessor mes
+     :initform "unimplemented resource record type while decoding RR"
+     :initarg :mes)))
+
+
+
+
+
+
+
+
+
 

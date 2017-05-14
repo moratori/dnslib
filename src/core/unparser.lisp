@@ -4,71 +4,77 @@
         :dnslib.core.types
         :dnslib.core.errors
         :dnslib.core.util
+        :dnslib.core.encoder
         )
   (:export 
-    :unparse-direct
-    :sizeof-direct
-
-    :unparse-compress
-    :sizeof-compress
+    :unparse
+    :sizeof
     )
   )
 (in-package :dnslib.core.unparser)
 
 
-#|
-  nameの圧縮部分の実装でいい方法を思いつかないので
-  圧縮なしの配列を返す。
-  所定のサイズ(512を意図)を超えてしまう場合には
-  TCフラグを立てるなどの対応が必要
-|#
+
+(defgeneric sizeof (object)
+  (:documentation ""))
 
 
-(defmethod sizeof-direct ((header header))
+(defmethod sizeof ((header header))
   "dnsヘッダのサイズを返す"
 
   (declare (ignore header))
 
   12)
 
-(defmethod sizeof-direct ((question question))
+(defmethod sizeof ((question question))
   "dnsのquestionセクションのサイズを返す"
   
   (let ((qname (question.qname question)))
     (+ 4 (name-len qname))))
 
-(defmethod sizeof-direct ((rr rr))
+(defmethod sizeof ((rr rr))
   "resourceレコードのサイズを返す"
   
   (+ 
     (name-len (rr.name rr))
-    2 2 4 2 (rr.rdlength rr)))
+    2 2 4 2 
+    (length 
+      (encode (rr.type rr) (rr.rdata rr)))))
 
-(defmethod sizeof-direct ((dns dns))
+
+(defmethod sizeof ((dns dns))
   "DNS構造体をnameの圧縮なしに配列に変換した場合
    の配列のサイズを返す"
 
   (declare (type dns dns))
 
-  (let ((fn #'sizeof-direct)
+  (let ((fn #'sizeof)
         (targets (list #'dns.question #'dns.answer #'dns.authority #'dns.additional)))
     (+ 
-      (sizeof-direct (dns.header dns))
+      (sizeof (dns.header dns))
       (loop for tfn in targets sum 
             (summation (funcall tfn dns) fn)))))
 
 
+(defgeneric unparse-section (rr arr start)
+  (:documentation ""))
 
-(defmethod unparse ((rr rr) arr start)
+
+(defmethod unparse-section ((rr rr) arr start)
   "arrのstart以降にリソースレコードを入れる"
   
   (let* ((name (rr.name rr))
          (type (rr.type rr))
          (class (rr.class rr))
          (ttl (rr.ttl rr))
-         (rdlength (rr.rdlength rr))
          (rdata (rr.rdata rr))
-         (next (set-name name arr start)))
+         (next (set-name (to-ubyte8-array name) arr start))
+         (enc-data (encode type rdata))
+         (rdlength (length enc-data)))  ;; rr.rdlength で得ることのできる値は無視する
+                                        ;; 実際にエンコードして得られた値のサイズを使用する
+                                        ;; rr.rdlength の値は、ポインタのサイズを表している可能性があるため使用することができない
+
+    (declare (type (simple-array (unsigned-byte 8)) enc-data))
     
     (set-upper8 type arr next)
     (set-lower8 type arr  (+ 1 next))
@@ -86,21 +92,22 @@
     (set-lower8 rdlength arr (+ 9 next))
 
     (let ((i (+ next 10)))
+
       (loop 
-        for elm across rdata
+        for elm across enc-data
         do 
         (setf (aref arr i) elm)
         (incf i))
       i)))
 
 
-(defmethod unparse ((question question) arr start)
+(defmethod unparse-section ((question question) arr start)
   "arrのstart以降にquestionを入れる"
   
   (let* ((qname (question.qname question))
          (qtype (question.qtype question))
          (qclass (question.qclass question))
-         (next (set-name qname arr start)))
+         (next (set-name (to-ubyte8-array qname) arr start)))
 
     (set-upper8 qtype arr next)
     (set-lower8 qtype arr  (+ next 1))
@@ -111,7 +118,7 @@
     (+ next 4)))
 
 
-(defmethod unparse ((header header) arr start)
+(defmethod unparse-section ((header header) arr start)
   "arrのstart以降にheaderを入れる"
 
   (let* ((h header)
@@ -166,14 +173,14 @@
   (let ((next start))
     (loop 
       for each in sections
-      do (setf next (unparse each arr next)))
+      do (setf next (unparse-section each arr next)))
     next))
 
 
-(defun unparse-direct (dns size)
+(defun unparse (dns size)
   "DNS構造体からunsigned-byte 8 な配列を返す
    nameの圧縮は行わない
-   ;; sizeは、sizeof-directで計算された配列のサイズ"
+   ;; sizeは、sizeofで計算された配列のサイズ"
 
   (declare (type dns dns))
 
@@ -187,7 +194,7 @@
             :initial-element 0))
         (start 0))
     
-    (setf start (unparse (dns.header dns) result start)
+    (setf start (unparse-section (dns.header dns) result start)
           start (%iterate-multiple-sections (dns.question dns) result start)
           start (%iterate-multiple-sections (dns.answer dns) result start)
           start (%iterate-multiple-sections (dns.authority dns) result start)
@@ -196,24 +203,3 @@
     result))
 
 
-
-
-
-
-
-
-(defun sizeof-compress (dns)
-  "DNS構造体をnameの圧縮ありで配列に変換した場合
-   の配列のサイズを返す"
-
-  (declare (ignore dns))
-
-  -1
-  )
-
-
-(defun unparse-compress (dns)
-  "DNS構造体からunsigned-byte 8 な配列を返す
-   nameの圧縮は行わない"
-  
-  )

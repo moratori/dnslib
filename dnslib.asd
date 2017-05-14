@@ -35,9 +35,11 @@
                    ((:file "errors")
                     (:file "types")
                     (:file "util")
+                    (:file "decoder")
+                    (:file "encoder")
                     (:file "parser")
                     (:file "unparser")
-                    (:file "evaldata")))
+                    ))
                  (:module "resolver"
                   :serial t
                   :components

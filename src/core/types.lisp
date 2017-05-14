@@ -38,8 +38,11 @@
     :rr.ttl
     :rr.rdlength
     :rr.rdata
-    )
-  )
+
+    :rdata-value
+    :rdata-value.parsed
+    :rdata-value.raw
+    ))
 (in-package :dnslib.core.types)
 
 
@@ -86,5 +89,5 @@
   (class 0  :type (integer 0 65535))
   (ttl 0    :type (integer 0 4294967295))
   (rdlength 0 :type (integer 0 65535))
-  (rdata nil :type (or null array)))
+  (rdata nil :type t))
 

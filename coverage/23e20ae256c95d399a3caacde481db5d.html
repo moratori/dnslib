@@ -22,7 +22,7 @@ table.summary tr.subheading { background-color: #aaaaff}
 table.summary tr.subheading td { text-align: left; font-weight: bold; padding-left: 5ex; }
 </style></head><body><h3>Coverage report: /home/moratori/Github/dnslib/src/core/errors.lisp <br />
 </h3>
-<table class='summary'><tr class='head-row'><td width='80px'>Kind</td><td width='80px'>Covered</td><td width='80px'>All</td><td width='80px'>%</td><tr class='odd'><td>expression</td><td>13</td><td>39</td><td> 33.3</td></tr>
+<table class='summary'><tr class='head-row'><td width='80px'>Kind</td><td width='80px'>Covered</td><td width='80px'>All</td><td width='80px'>%</td><tr class='odd'><td>expression</td><td>14</td><td>41</td><td> 34.1</td></tr>
 <tr class='even'><td>branch</td><td>0</td><td>0</td><td>nil  </td></tr>
 </table><div class='key'><b>Key</b><br />
 <div class='state-0'>Not instrumented</div><div class='state-15'>Conditionalized out</div><div class='state-1'>Executed</div><div class='state-2'>Not executed</div><div>&#160;</div><div class='state-5'>Both branches taken</div><div class='state-6'>One branch taken</div><div class='state-10''>Neither branch taken</div></div><nobr><div><code>
@@ -43,66 +43,95 @@ table.summary tr.subheading td { text-align: left; font-weight: bold; padding-le
 <nobr><div class='source'><div class='line-number'><code>14</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#160;&#160;&#58;dp&#45;error</span></code></div></nobr>
 <nobr><div class='source'><div class='line-number'><code>15</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#160;&#160;&#58;mq&#45;error</span></code></div></nobr>
 <nobr><div class='source'><div class='line-number'><code>16</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#160;&#160;&#58;aaa&#45;error</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>17</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#160;&#160;&#41;</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>18</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#41;</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>19</code></div><code>&#160;<span class='state-0'>&#40;in&#45;package&#160;&#58;dnslib&#46;core&#46;errors&#41;</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>20</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>21</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>22</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>23</code></div><code>&#160;<span class='state-1'>&#40;defun&#160;qp&#45;error&#160;&#40;data&#160;mes&#41;</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>24</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#40;raise&#45;condition&#160;&#39;qname&#45;pointer&#45;error&#160;data&#160;mes&#41;&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>17</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>18</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#160;&#160;&#58;data&#45;decode&#45;error</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>19</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#160;&#160;&#58;data&#45;encode&#45;error</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>20</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#160;&#160;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>21</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#160;&#160;&#41;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>22</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#41;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>23</code></div><code>&#160;<span class='state-0'>&#40;in&#45;package&#160;&#58;dnslib&#46;core&#46;errors&#41;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>24</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
 <nobr><div class='source'><div class='line-number'><code>25</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>26</code></div><code>&#160;<span class='state-2'>&#40;defun&#160;ql&#45;error&#160;&#40;data&#160;mes&#41;</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>27</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#40;raise&#45;condition&#160;&#39;qname&#45;len&#45;error&#160;data&#160;mes&#41;&#41;</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>28</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>29</code></div><code>&#160;<span class='state-2'>&#40;defun&#160;qt&#45;error&#160;&#40;data&#160;mes&#41;</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>30</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#40;raise&#45;condition&#160;&#39;qname&#45;terminal&#45;error&#160;data&#160;mes&#41;&#41;</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>31</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>32</code></div><code>&#160;<span class='state-2'>&#40;defun&#160;dp&#45;error&#160;&#40;data&#160;mes&#41;</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>33</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#40;raise&#45;condition&#160;&#39;data&#45;parse&#45;error&#160;data&#160;mes&#41;&#41;</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>34</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>35</code></div><code>&#160;<span class='state-2'>&#40;defun&#160;mq&#45;error&#160;&#40;data&#160;mes&#41;</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>36</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#40;raise&#45;condition&#160;&#39;malformed&#45;question&#45;error&#160;data&#160;mes&#41;&#41;</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>37</code></div><code>&#160;<span class='state-0'>&#160;</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>38</code></div><code>&#160;<span class='state-2'>&#40;defun&#160;aaa&#45;error&#160;&#40;data&#160;mes&#41;</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>39</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#40;raise&#45;condition&#160;&#39;malformed&#45;aaa&#45;section&#45;error&#160;data&#160;mes&#41;&#41;</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>40</code></div><code>&#160;<span class='state-0'>&#160;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>26</code></div><code>&#160;<span class='state-1'>&#40;defun&#160;raise&#45;condition&#160;&#40;condname&#160;data&#160;mes&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>27</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#40;error&#160;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>28</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#160;&#160;&#40;make&#45;condition&#160;condname&#160;&#58;data&#160;data&#160;&#58;mes&#160;mes&#41;&#41;&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>29</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>30</code></div><code>&#160;<span class='state-1'>&#40;defun&#160;qp&#45;error&#160;&#40;data&#160;mes&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>31</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#40;raise&#45;condition&#160;&#39;qname&#45;pointer&#45;error&#160;data&#160;mes&#41;&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>32</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>33</code></div><code>&#160;<span class='state-2'>&#40;defun&#160;ql&#45;error&#160;&#40;data&#160;mes&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>34</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#40;raise&#45;condition&#160;&#39;qname&#45;len&#45;error&#160;data&#160;mes&#41;&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>35</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>36</code></div><code>&#160;<span class='state-2'>&#40;defun&#160;qt&#45;error&#160;&#40;data&#160;mes&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>37</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#40;raise&#45;condition&#160;&#39;qname&#45;terminal&#45;error&#160;data&#160;mes&#41;&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>38</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>39</code></div><code>&#160;<span class='state-2'>&#40;defun&#160;dp&#45;error&#160;&#40;data&#160;mes&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>40</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#40;raise&#45;condition&#160;&#39;data&#45;parse&#45;error&#160;data&#160;mes&#41;&#41;</span><span class='state-0'></span></code></div></nobr>
 <nobr><div class='source'><div class='line-number'><code>41</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>42</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>43</code></div><code>&#160;<span class='state-1'>&#40;defun&#160;raise&#45;condition&#160;&#40;condname&#160;data&#160;mes&#41;</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>44</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#40;error&#160;</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>45</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#160;&#160;&#40;make&#45;condition&#160;condname&#160;&#58;data&#160;data&#160;&#58;mes&#160;mes&#41;&#41;&#41;</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>46</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>42</code></div><code>&#160;<span class='state-2'>&#40;defun&#160;mq&#45;error&#160;&#40;data&#160;mes&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>43</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#40;raise&#45;condition&#160;&#39;malformed&#45;question&#45;error&#160;data&#160;mes&#41;&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>44</code></div><code>&#160;<span class='state-0'>&#160;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>45</code></div><code>&#160;<span class='state-2'>&#40;defun&#160;aaa&#45;error&#160;&#40;data&#160;mes&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>46</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#40;raise&#45;condition&#160;&#39;malformed&#45;aaa&#45;section&#45;error&#160;data&#160;mes&#41;&#41;</span><span class='state-0'></span></code></div></nobr>
 <nobr><div class='source'><div class='line-number'><code>47</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
 <nobr><div class='source'><div class='line-number'><code>48</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>49</code></div><code>&#160;<span class='state-2'>&#40;define&#45;condition&#160;data&#45;parse&#45;error&#160;&#40;error&#41;</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>50</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#40;&#40;data</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>51</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#160;&#160;&#160;&#58;accessor&#160;data</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>52</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#160;&#160;&#160;&#58;initform&#160;nil</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>53</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#160;&#160;&#160;&#58;initarg&#160;&#58;data&#41;</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>54</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#160;&#40;mes&#160;</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>55</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#160;&#160;&#160;&#58;accessor&#160;mes</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>56</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#160;&#160;&#160;&#58;initform&#160;&#34;parse&#160;error&#34;</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>57</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#160;&#160;&#160;&#58;initarg&#160;&#58;mes&#41;&#41;&#41;</span><span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>58</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>59</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>60</code></div><code>&#160;<span class='state-0'>&#40;define&#45;condition&#160;qname&#45;pointer&#45;error&#160;&#40;data&#45;parse&#45;error&#41;</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>61</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#40;&#41;</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>62</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#41;</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>63</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>64</code></div><code>&#160;<span class='state-0'>&#40;define&#45;condition&#160;qname&#45;len&#45;error&#160;&#40;data&#45;parse&#45;error&#41;</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>65</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#40;&#41;</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>66</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#41;</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>67</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>68</code></div><code>&#160;<span class='state-0'>&#40;define&#45;condition&#160;qname&#45;terminal&#45;error&#160;&#40;data&#45;parse&#45;error&#41;</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>69</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#40;&#41;</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>70</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#41;</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>71</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>72</code></div><code>&#160;<span class='state-0'>&#40;define&#45;condition&#160;malformed&#45;question&#45;error&#160;&#40;data&#45;parse&#45;error&#41;</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>73</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#40;&#41;</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>74</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#41;</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>75</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>76</code></div><code>&#160;<span class='state-0'>&#40;define&#45;condition&#160;malformed&#45;aaa&#45;section&#45;error&#160;&#40;data&#45;parse&#45;error&#41;</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>77</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#40;&#41;</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>78</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#41;</span></code></div></nobr>
-<nobr><div class='source'><div class='line-number'><code>79</code></div><code>&#160;</code></div></body></html>
+<nobr><div class='source'><div class='line-number'><code>49</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>50</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>51</code></div><code>&#160;<span class='state-2'>&#40;define&#45;condition&#160;data&#45;parse&#45;error&#160;&#40;error&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>52</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#40;&#40;data</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>53</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#160;&#160;&#160;&#58;accessor&#160;data</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>54</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#160;&#160;&#160;&#58;initform&#160;nil</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>55</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#160;&#160;&#160;&#58;initarg&#160;&#58;data&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>56</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#160;&#40;mes&#160;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>57</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#160;&#160;&#160;&#58;accessor&#160;mes</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>58</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#160;&#160;&#160;&#58;initform&#160;&#34;parse&#160;error&#34;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>59</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#160;&#160;&#160;&#58;initarg&#160;&#58;mes&#41;&#41;&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>60</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>61</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>62</code></div><code>&#160;<span class='state-0'>&#40;define&#45;condition&#160;qname&#45;pointer&#45;error&#160;&#40;data&#45;parse&#45;error&#41;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>63</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#40;&#41;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>64</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#41;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>65</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>66</code></div><code>&#160;<span class='state-0'>&#40;define&#45;condition&#160;qname&#45;len&#45;error&#160;&#40;data&#45;parse&#45;error&#41;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>67</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#40;&#41;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>68</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#41;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>69</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>70</code></div><code>&#160;<span class='state-0'>&#40;define&#45;condition&#160;qname&#45;terminal&#45;error&#160;&#40;data&#45;parse&#45;error&#41;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>71</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#40;&#41;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>72</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#41;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>73</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>74</code></div><code>&#160;<span class='state-0'>&#40;define&#45;condition&#160;malformed&#45;question&#45;error&#160;&#40;data&#45;parse&#45;error&#41;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>75</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#40;&#41;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>76</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#41;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>77</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>78</code></div><code>&#160;<span class='state-0'>&#40;define&#45;condition&#160;malformed&#45;aaa&#45;section&#45;error&#160;&#40;data&#45;parse&#45;error&#41;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>79</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#40;&#41;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>80</code></div><code>&#160;<span class='state-0'>&#160;&#160;&#41;</span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>81</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>82</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>83</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>84</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>85</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>86</code></div><code>&#160;<span class='state-2'>&#40;define&#45;condition&#160;data&#45;encode&#45;error&#160;&#40;error&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>87</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#40;&#40;mes&#160;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>88</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#160;&#160;&#160;&#58;accessor&#160;mes</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>89</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#160;&#160;&#160;&#58;initform&#160;&#34;&#34;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>90</code></div><code>&#160;<span class='state-2'>&#160;&#160;&#160;&#160;&#160;&#58;initarg&#160;&#58;mes&#41;&#41;&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>91</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>92</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>93</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>94</code></div><code>&#160;<span class='state-1'>&#40;define&#45;condition&#160;data&#45;decode&#45;error&#160;&#40;warning&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>95</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#40;&#40;mes&#160;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>96</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#160;&#160;&#160;&#58;accessor&#160;mes</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>97</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#160;&#160;&#160;&#58;initform&#160;&#34;unimplemented&#160;resource&#160;record&#160;type&#160;while&#160;decoding&#160;RR&#34;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>98</code></div><code>&#160;<span class='state-1'>&#160;&#160;&#160;&#160;&#160;&#58;initarg&#160;&#58;mes&#41;&#41;&#41;</span><span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>99</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>100</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>101</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>102</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>103</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>104</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>105</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>106</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>107</code></div><code>&#160;<span class='state-0'></span></code></div></nobr>
+<nobr><div class='source'><div class='line-number'><code>108</code></div><code>&#160;</code></div></body></html>
