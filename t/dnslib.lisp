@@ -15,7 +15,7 @@
 (setf *random-state* (make-random-state t))
 
 (defvar *real-dnspayload* (eval (read (open "t/dnspayload"))))
-(defvar *random-dns-packet-test* 1)
+(defvar *random-dns-packet-test* 10000)
 
 (defun make-ub8-array (list)
   (make-array 
